@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NutriAI - AI Food & Nutrition Assistant</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --green:#18a673;--green2:#0f8f62;--mint:#e9fff6;--dark:#17352d;
+  --text:#263a35;--muted:#70817c;--white:#fff;--shadow:0 18px 50px rgba(25,80,60,.12);
+}
+body{font-family:Inter,Segoe UI,Arial,sans-serif;color:var(--text);background:#f6fbf8;min-height:100vh}
+button,input,select{font:inherit}
+button{cursor:pointer;border:0}
+.hidden{display:none!important}
+.navbar{height:72px;background:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 7%;box-shadow:0 2px 18px rgba(0,0,0,.05);position:sticky;top:0;z-index:10}
+.logo{display:flex;align-items:center;gap:10px;font-size:22px;font-weight:800;color:var(--dark)}
+.logo-icon{width:40px;height:40px;border-radius:13px;background:linear-gradient(135deg,#21bd7d,#0e8d61);display:grid;place-items:center;color:#fff;font-size:22px}
+.nav-links{display:flex;gap:26px;align-items:center}.nav-links a{color:#52665f;text-decoration:none;font-weight:600}
+.btn{padding:12px 20px;border-radius:12px;font-weight:700;transition:.2s}
+.btn-primary{background:var(--green);color:#fff}.btn-primary:hover{background:var(--green2);transform:translateY(-1px)}
+.btn-outline{background:#fff;color:var(--green);border:1px solid #bce9d7}
+.hero{max-width:1180px;margin:0 auto;padding:80px 25px 70px;display:grid;grid-template-columns:1.1fr .9fr;gap:50px;align-items:center}
+.badge{display:inline-flex;background:var(--mint);color:var(--green2);padding:8px 14px;border-radius:30px;font-weight:700;font-size:13px;margin-bottom:18px}
+.hero h1{font-size:55px;line-height:1.05;color:var(--dark);margin-bottom:20px}
+.hero h1 span{color:var(--green)}
+.hero p{font-size:18px;line-height:1.7;color:var(--muted);max-width:590px;margin-bottom:28px}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap}
+.hero-card{background:#fff;border-radius:28px;padding:30px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.hero-card:before{content:"";position:absolute;width:180px;height:180px;border-radius:50%;background:#e8fff5;right:-60px;top:-60px}
+.food-circle{height:330px;border-radius:25px;background:linear-gradient(145deg,#f0fff8,#d8f8ea);display:grid;place-items:center;font-size:105px;position:relative}
+.float-card{position:absolute;background:#fff;padding:15px 18px;border-radius:16px;box-shadow:0 12px 35px rgba(0,0,0,.12);font-weight:700;font-size:14px}
+.float1{left:12px;bottom:25px}.float2{right:12px;top:25px}
+.section{padding:65px 7%;background:#fff}.section-title{text-align:center;margin-bottom:35px}.section-title h2{font-size:34px;color:var(--dark)}.section-title p{color:var(--muted);margin-top:8px}
+.features{max-width:1100px;margin:auto;display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.feature{padding:28px;border:1px solid #e4f0eb;border-radius:20px}.feature-icon{font-size:30px;margin-bottom:15px}.feature h3{margin-bottom:8px}.feature p{color:var(--muted);line-height:1.6}
+.footer{text-align:center;padding:25px;color:#82938d;font-size:13px}
+
+.auth-wrap{min-height:calc(100vh - 72px);display:grid;place-items:center;padding:35px 20px;background:linear-gradient(135deg,#effff8,#f8fbfa)}
+.auth-card{width:min(440px,100%);background:#fff;padding:35px;border-radius:24px;box-shadow:var(--shadow)}
+.auth-card h2{font-size:30px;color:var(--dark);margin-bottom:8px}.auth-card>p{color:var(--muted);margin-bottom:25px}
+.form-group{margin-bottom:16px}.form-group label{display:block;font-size:13px;font-weight:700;margin-bottom:7px}.form-group input,.form-group select{width:100%;padding:13px 14px;border:1px solid #dbe9e4;border-radius:11px;outline:none;background:#fbfefd}.form-group input:focus,.form-group select:focus{border-color:var(--green)}
+.full{width:100%}.switch{text-align:center;margin-top:18px;font-size:14px;color:var(--muted)}.switch a{color:var(--green);font-weight:700;cursor:pointer}
+.error{color:#d9534f;font-size:13px;margin-top:8px}.success{color:#138a5c;font-size:13px;margin-top:8px}
+
+.dashboard{display:none;min-height:100vh;background:#f5faf7}.dash-nav{height:70px;background:#fff;padding:0 5%;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 15px rgba(0,0,0,.05)}.user-chip{display:flex;gap:10px;align-items:center}.avatar{width:38px;height:38px;border-radius:50%;background:#d9f8ea;display:grid;place-items:center;color:var(--green2);font-weight:800}
+.dash-content{max-width:1250px;margin:auto;padding:35px 22px}.welcome h1{color:var(--dark);font-size:31px}.welcome p{color:var(--muted);margin-top:6px}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin:25px 0}.stat{background:#fff;border-radius:18px;padding:20px;box-shadow:0 5px 20px rgba(20,80,60,.06)}.stat small{color:var(--muted)}.stat strong{display:block;font-size:28px;margin-top:8px;color:var(--dark)}.stat span{font-size:12px;color:var(--green)}
+.grid{display:grid;grid-template-columns:1.3fr .7fr;gap:20px}.panel{background:#fff;border-radius:20px;padding:24px;box-shadow:0 5px 20px rgba(20,80,60,.06);margin-bottom:20px}.panel h2{font-size:20px;color:var(--dark);margin-bottom:18px}.meal{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid #edf3f0}.meal:last-child{border-bottom:0}.meal-left{display:flex;align-items:center;gap:13px}.meal-icon{width:45px;height:45px;border-radius:13px;background:#eefbf5;display:grid;place-items:center;font-size:22px}.meal b{display:block}.meal small{color:var(--muted)}.kcal{font-size:13px;font-weight:700;color:var(--green2)}
+.progress{height:10px;background:#eaf2ef;border-radius:10px;overflow:hidden;margin:10px 0 18px}.progress div{height:100%;background:linear-gradient(90deg,#19b477,#57d49e);border-radius:10px}
+.check{display:flex;gap:10px;align-items:center;padding:9px 0;color:#52655e}.check input{accent-color:var(--green)}
+.quick{display:grid;grid-template-columns:1fr 1fr;gap:10px}.quick button{padding:15px;border-radius:12px;background:#effaf5;color:var(--green2);font-weight:700}
+.logout{color:#d85b5b;background:none;font-weight:700}
+
+@media(max-width:850px){
+ .hero{grid-template-columns:1fr;padding-top:50px}.hero h1{font-size:42px}
+ .features,.cards,.grid{grid-template-columns:1fr 1fr}.grid{grid-template-columns:1fr}
+ .nav-links{display:none}
+}
+@media(max-width:550px){.features,.cards{grid-template-columns:1fr}.navbar{padding:0 18px}.hero{padding-left:18px;padding-right:18px}.hero h1{font-size:36px}}
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="logo"><div class="logo-icon">🥗</div>NutriAI</div>
+  <div class="nav-links">
+    <a href="#home">Home</a><a href="#features">Features</a>
+    <button class="btn btn-outline" onclick="showPage('login')">Login</button>
+    <button class="btn btn-primary" onclick="showPage('register')">Get Started</button>
+  </div>
+</nav>
+
+<!-- LANDING PAGE -->
+<main id="homePage">
+<section class="hero" id="home">
+  <div>
+    <div class="badge">✨ AI-Powered Food & Nutrition Assistant</div>
+    <h1>Eat smarter.<br><span>Live healthier.</span></h1>
+    <p>Get personalized meal plans, nutrition recommendations and smart grocery lists based on your goals, food preferences, budget and available ingredients.</p>
+    <div class="hero-actions">
+      <button class="btn btn-primary" onclick="showPage('register')">Start Your Nutrition Journey →</button>
+      <button class="btn btn-outline" onclick="showPage('login')">Login</button>
+    </div>
+  </div>
+  <div class="hero-card">
+    <div class="food-circle">🥗🍎🥑</div>
+    <div class="float-card float1">🔥 1,850 kcal daily goal</div>
+    <div class="float-card float2">🤖 AI Meal Plan Ready</div>
+  </div>
+</section>
+
+<section class="section" id="features">
+  <div class="section-title"><h2>Everything you need to eat better</h2><p>Your personal nutrition assistant in one simple dashboard.</p></div>
+  <div class="features">
+    <div class="feature"><div class="feature-icon">🎯</div><h3>Personalized Goals</h3><p>Set nutrition goals and preferences so recommendations are tailored to you.</p></div>
+    <div class="feature"><div class="feature-icon">🍽️</div><h3>Smart Meal Plans</h3><p>Generate daily meal ideas based on your ingredients, preferences and budget.</p></div>
+    <div class="feature"><div class="feature-icon">🛒</div><h3>Grocery Lists</h3><p>Automatically organize the ingredients you need for your planned meals.</p></div>
+  </div>
+</section>
+<div class="footer">© 2026 NutriAI • Hackathon Prototype</div>
+</main>
+
+<!-- LOGIN -->
+<section id="loginPage" class="auth-wrap hidden">
+  <div class="auth-card">
+    <h2>Welcome back 👋</h2><p>Login to continue your nutrition journey.</p>
+    <form onsubmit="login(event)">
+      <div class="form-group"><label>Email</label><input id="loginEmail" type="email" placeholder="you@example.com" required></div>
+      <div class="form-group"><label>Password</label><input id="loginPassword" type="password" placeholder="••••••••" required></div>
+      <button class="btn btn-primary full">Login to NutriAI</button>
+      <div id="loginMsg"></div>
+    </form>
+    <div class="switch">Don't have an account? <a onclick="showPage('register')">Create one</a></div>
+  </div>
+</section>
+
+<!-- REGISTER -->
+<section id="registerPage" class="auth-wrap hidden">
+  <div class="auth-card">
+    <h2>Create your account 🌱</h2><p>Start receiving personalized nutrition recommendations.</p>
+    <form onsubmit="register(event)">
+      <div class="form-group"><label>Full Name</label><input id="regName" type="text" placeholder="Enter your name" required></div>
+      <div class="form-group"><label>Email</label><input id="regEmail" type="email" placeholder="you@example.com" required></div>
+      <div class="form-group"><label>Password</label><input id="regPassword" type="password" minlength="6" placeholder="Minimum 6 characters" required></div>
+      <div class="form-group"><label>Primary Goal</label>
+        <select id="regGoal" required>
+          <option value="">Select your goal</option><option>Healthy eating</option><option>Weight management</option><option>Muscle & fitness</option><option>Balanced nutrition</option>
+        </select>
+      </div>
+      <button class="btn btn-primary full">Create Account</button>
+      <div id="registerMsg"></div>
+    </form>
+    <div class="switch">Already have an account? <a onclick="showPage('login')">Login</a></div>
+  </div>
+</section>
+
+<!-- DASHBOARD -->
+<section id="dashboardPage" class="dashboard">
+  <nav class="dash-nav">
+    <div class="logo"><div class="logo-icon">🥗</div>NutriAI</div>
+    <div class="user-chip"><div class="avatar" id="avatar">U</div><b id="dashName">User</b><button class="logout" onclick="logout()">Logout</button></div>
+  </nav>
+  <div class="dash-content">
+    <div class="welcome"><h1 id="welcomeText">Good morning! 🌱</h1><p>Here is your personalized nutrition overview for today.</p></div>
+
+    <div class="cards">
+      <div class="stat"><small>Daily Calories</small><strong>1,850</strong><span>of 2,000 kcal</span></div>
+      <div class="stat"><small>Protein</small><strong>82g</strong><span>68% of target</span></div>
+      <div class="stat"><small>Water</small><strong>1.6L</strong><span>of 2.5L goal</span></div>
+      <div class="stat"><small>Nutrition Score</small><strong>86%</strong><span>Great progress! ✨</span></div>
+    </div>
+
+    <div class="grid">
+      <div>
+        <div class="panel">
+          <h2>🍽️ Today's AI Meal Plan</h2>
+          <div class="meal"><div class="meal-left"><div class="meal-icon">🥣</div><div><b>Breakfast</b><small>Oats, banana & almonds</small></div></div><span class="kcal">420 kcal</span></div>
+          <div class="meal"><div class="meal-left"><div class="meal-icon">🥗</div><div><b>Lunch</b><small>Rice, dal, vegetables & curd</small></div></div><span class="kcal">610 kcal</span></div>
+          <div class="meal"><div class="meal-left"><div class="meal-icon">🍎</div><div><b>Snack</b><small>Apple & roasted nuts</small></div></div><span class="kcal">220 kcal</span></div>
+          <div class="meal"><div class="meal-left"><div class="meal-icon">🍛</div><div><b>Dinner</b><small>Chapati, paneer & salad</small></div></div><span class="kcal">600 kcal</span></div>
+        </div>
+        <div class="panel">
+          <h2>🤖 AI Recommendation</h2>
+          <p style="color:#62736d;line-height:1.7">Your protein intake is slightly below today's target. Consider adding paneer, dal, eggs, beans or yogurt to your next meal.</p>
+        </div>
+      </div>
+
+      <div>
+        <div class="panel">
+          <h2>📊 Daily Nutrition</h2>
+          <small>Calories</small><div class="progress"><div style="width:92%"></div></div>
+          <small>Protein</small><div class="progress"><div style="width:68%"></div></div>
+          <small>Water</small><div class="progress"><div style="width:64%"></div></div>
+          <small>Fruits & Vegetables</small><div class="progress"><div style="width:80%"></div></div>
+        </div>
+        <div class="panel">
+          <h2>🛒 Grocery List</h2>
+          <label class="check"><input type="checkbox"> Oats & milk</label>
+          <label class="check"><input type="checkbox"> Bananas & apples</label>
+          <label class="check"><input type="checkbox"> Paneer / yogurt</label>
+          <label class="check"><input type="checkbox"> Fresh vegetables</label>
+          <label class="check"><input type="checkbox"> Dal & nuts</label>
+        </div>
+        <div class="panel">
+          <h2>⚡ Quick Actions</h2>
+          <div class="quick"><button onclick="alert('AI meal planner will be connected in Step 2!')">🍽️ New Meal Plan</button><button onclick="alert('Ingredient analyzer will be connected in Step 2!')">🥕 Analyze Food</button></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+function showPage(page){
+  document.getElementById('homePage').classList.add('hidden');
+  document.getElementById('loginPage').classList.add('hidden');
+  document.getElementById('registerPage').classList.add('hidden');
+  document.getElementById('dashboardPage').style.display='none';
+  if(page==='home'){document.getElementById('homePage').classList.remove('hidden')}
+  if(page==='login'){document.getElementById('loginPage').classList.remove('hidden')}
+  if(page==='register'){document.getElementById('registerPage').classList.remove('hidden')}
+  if(page==='dashboard'){document.getElementById('dashboardPage').style.display='block'}
+  window.scrollTo(0,0);
+}
+function register(e){
+  e.preventDefault();
+  const name=document.getElementById('regName').value;
+  const email=document.getElementById('regEmail').value;
+  const password=document.getElementById('regPassword').value;
+  const goal=document.getElementById('regGoal').value;
+  localStorage.setItem('nutriUser',JSON.stringify({name,email,password,goal}));
+  document.getElementById('registerMsg').className='success';
+  document.getElementById('registerMsg').textContent='Account created successfully! Opening dashboard...';
+  setTimeout(()=>loadDashboard(name),700);
+}
+function login(e){
+  e.preventDefault();
+  const saved=JSON.parse(localStorage.getItem('nutriUser')||'null');
+  const email=document.getElementById('loginEmail').value;
+  const password=document.getElementById('loginPassword').value;
+  if(saved && saved.email===email && saved.password===password){loadDashboard(saved.name)}
+  else{
+    const msg=document.getElementById('loginMsg');msg.className='error';
+    msg.textContent=saved?'Invalid email or password.':'No account found. Please register first.';
+  }
+}
+function loadDashboard(name){
+  document.getElementById('dashName').textContent=name;
+  document.getElementById('avatar').textContent=name.charAt(0).toUpperCase();
+  document.getElementById('welcomeText').textContent='Welcome, '+name+'! 🌱';
+  showPage('dashboard');
+}
+function logout(){showPage('home')}
+</script>
+</body>
+</html>
